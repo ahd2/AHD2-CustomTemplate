@@ -13,6 +13,7 @@ public class TemplateGenerator : EditorWindow
     string templateText = "";
     private string format = "";
     private string templateCSResourceFile = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/Core/GeneratorTemplate.txt";
+    public static TemplateSOManager templateSOManager; //SO管理器
 
     [MenuItem("Tools/Template Generator")]
     public static void ShowWindow()
@@ -29,11 +30,27 @@ public class TemplateGenerator : EditorWindow
         menuName = EditorGUILayout.TextField("Menu Name", menuName);
         format = EditorGUILayout.TextField("格式", format);
         templateText = EditorGUILayout.TextArea(templateText, GUILayout.Height(100));
+        
+        // Vector2 scrollPosition = Vector2.zero; // 用于保存滚动视图的位置
+        // // 显示列表
+        // scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
+        // for (int i = 0; i < templateSOManager.templateSOs.Count; i++)
+        // {
+        //     templateSOManager.templateSOs[i] = (TemplateSO)EditorGUILayout.ObjectField(templateSOManager.templateSOs[i], typeof(TemplateSO), false);
+        // }
+        // EditorGUILayout.EndScrollView();
+        
 
         if (GUILayout.Button("Create Template"))
         {
             CreateTemplateTxt();
             CreateTemplateCS();
+        }
+        
+        // 应用更改
+        if (GUI.changed)
+        {
+            //EditorUtility.SetDirty(templateManager);
         }
     }
     
