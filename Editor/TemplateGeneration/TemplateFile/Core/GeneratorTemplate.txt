@@ -1,0 +1,22 @@
+using UnityEngine;
+using UnityEditor;
+using System;
+using System.IO;
+using System.Text;
+using UnityEditor.ProjectWindowCallback;
+using System.Text.RegularExpressions;
+
+
+public class #CODENAME#Template : Template
+{
+    
+    [MenuItem("Assets/Create/自定义模板CustomTemplate/#MENUNAME#", false, 80)]
+    public static void CreatNew#CODENAME#()
+    {
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+        ScriptableObject.CreateInstance<DoCreateTemplateAsset>(),
+        GetSelectedPathOrFallback() + "/New#CODENAME#.#FORMAT#",
+        EditorGUIUtility.FindTexture("Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/Core/ahd2Icon.png"),
+       "#RESOURCEFILEPATH#");
+    }
+}
