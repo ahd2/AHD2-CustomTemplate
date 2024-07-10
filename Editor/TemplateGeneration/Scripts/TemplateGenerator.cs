@@ -14,6 +14,16 @@ public class TemplateGenerator : EditorWindow
     private string format = "";
     private string templateCSResourceFile = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/Core/GeneratorTemplate.txt";
     public static TemplateSOManager templateSOManager; //SO管理器
+    
+    // 子界面的枚举类型，用于切换
+    private enum SubWindowType
+    {
+        GeneratorWindow,
+        SOListWindow
+    }
+
+    // 当前选中的子界面类型
+    private SubWindowType currentSubWindow = SubWindowType.GeneratorWindow;
 
     [MenuItem("Tools/Template Generator")]
     public static void ShowWindow()
@@ -23,8 +33,34 @@ public class TemplateGenerator : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("Create a new template file", EditorStyles.boldLabel);
-
+        // 根据选中的标签页显示不同的子界面
+        switch (currentSubWindow)
+        {
+            case SubWindowType.GeneratorWindow:
+                GUILayout.Label("创建一个新模板。", EditorStyles.boldLabel);
+                break;
+            case SubWindowType.SOListWindow:
+                GUILayout.Label("管理已生成的模板。", EditorStyles.boldLabel);
+                break;
+        }
+        // 顶部标签页
+        GUILayout.BeginHorizontal();
+        currentSubWindow = (SubWindowType)GUILayout.Toolbar((int)currentSubWindow, new string[] { "模板生成", "模板列表" });
+        GUILayout.EndHorizontal();
+        
+        // 根据选中的标签页显示不同的子界面
+        switch (currentSubWindow)
+        {
+            case SubWindowType.GeneratorWindow:
+                DrawGeneratorWindow();
+                break;
+            case SubWindowType.SOListWindow:
+                DrawSOListWindow();
+                break;
+        }
+    }
+    private void DrawGeneratorWindow()
+    {
         codeName = EditorGUILayout.TextField("缩写(只支持字母)", codeName);
         codeName = Regex.Replace(codeName, @"[^a-zA-Z]", ""); //移除codeName中的所有非字母字符
         menuName = EditorGUILayout.TextField("Menu Name", menuName);
@@ -52,6 +88,12 @@ public class TemplateGenerator : EditorWindow
         {
             //EditorUtility.SetDirty(templateManager);
         }
+    }
+
+    private void DrawSOListWindow()
+    {
+        // 子界面2的GUI代码
+        GUILayout.Label("This is the content of Sub Window 2");
     }
     
     /// <summary>
