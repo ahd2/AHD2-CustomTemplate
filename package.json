@@ -1,6 +1,6 @@
 {
   "name": "com.ahd2.custom-template",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "AHD2-CustomTemplate",
   "description": "用于Unity项目的右键菜单拓展，可根据自定义的文本模板，在右键菜单创建自定义脚本，Shader，HLSL等文件。",
   "unity": "2021.3",
