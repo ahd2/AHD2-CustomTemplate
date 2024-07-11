@@ -150,7 +150,8 @@ public class TemplateGenerator : EditorWindow
     {
         //string path = EditorUtility.SaveFilePanel("Save Template File", "", codeName + ".txt", "txt"); //打开文件路径选择窗口
 
-        string path = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/" + codeName + "Template.txt";
+        string path = "Assets/AHD2CustomTemplate/TemplateFile/" + codeName + "Template.txt";
+        CreateDirectory("Assets/AHD2CustomTemplate/TemplateFile");//尝试创建路径
         File.WriteAllText(path, templateText);
         AssetDatabase.Refresh();
         //Debug.Log("模板创建完成！");
@@ -161,7 +162,9 @@ public class TemplateGenerator : EditorWindow
     /// </summary>
     void CreateTemplateCS()
     {
-        string pathName = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/Template/" + codeName + "Template.cs";//生成模板脚本文件
+        //string pathName = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/Template/" + codeName + "Template.cs";//生成模板脚本文件
+        string pathName = "Assets/AHD2CustomTemplate/Scripts/Template/" + codeName + "Template.cs";//生成模板脚本文件
+        CreateDirectory("Assets/AHD2CustomTemplate/Scripts/Template");//尝试创建路径
         string fullPath = Path.GetFullPath(pathName);
         StreamReader streamReader = new StreamReader(templateCSResourceFile);//读取模板CS文件文本内容
         string text = streamReader.ReadToEnd();
@@ -170,7 +173,7 @@ public class TemplateGenerator : EditorWindow
         text = Regex.Replace(text, "#CODENAME#", codeName); //
         text = Regex.Replace(text, "#MENUNAME#", menuName); //
         text = Regex.Replace(text, "#FORMAT#", format); //
-        text = Regex.Replace(text, "#RESOURCEFILEPATH#", "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/" + codeName + "Template.txt"); //
+        text = Regex.Replace(text, "#RESOURCEFILEPATH#", "Assets/AHD2CustomTemplate/TemplateFile/" + codeName + "Template.txt"); //
         bool encoderShouldEmitUTF8Identifier = true;
         bool throwOnInvalidBytes = false;
         UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
@@ -185,17 +188,27 @@ public class TemplateGenerator : EditorWindow
     //创建SO，记录CS和txt路径。
     void CreateTemplateSO()
     {
-        string soPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/TemplateSO/" + codeName +
+        string soPath = "Assets/AHD2CustomTemplate/Scripts/TemplateSO/" + codeName +
                         "TemplateSO.asset";
+        CreateDirectory("Assets/AHD2CustomTemplate/Scripts/TemplateSO");//尝试创建路径
         TemplateSO newTemplateSo = ScriptableObject.CreateInstance<TemplateSO>();
         newTemplateSo.templateCSName = codeName;
         newTemplateSo.soPath = soPath;
-        newTemplateSo.txtPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/" + codeName + "Template.txt";
-        newTemplateSo.csPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/Template/" +
-                               codeName + "Template.cs";
+        newTemplateSo.txtPath = "Assets/AHD2CustomTemplate/TemplateFile/" + codeName + "Template.txt";
+        newTemplateSo.csPath = "Assets/AHD2CustomTemplate/Scripts/Template/" + codeName + "Template.cs";
         AssetDatabase.CreateAsset(newTemplateSo, soPath);
         AssetDatabase.SaveAssets();
         templateSOManager.AddTemplateSO(newTemplateSo);
+    }
+
+    public void CreateDirectory(string path)
+    {
+        // 检查路径是否已存在
+        if (!Directory.Exists(path))
+        {
+            // 如果路径不存在，创建它
+            Directory.CreateDirectory(path);
+        }
     }
     #endregion
 }

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// 在结束创建资产的命名的行为时触发的，主要目的是进行资产创建和内容文本替换。
 /// </summary>
-class DoCreateTemplateAsset : EndNameEditAction
+public class DoCreateTemplateAsset : EndNameEditAction
 {
  
  
