@@ -30,3 +30,7 @@ https://github.com/ahd2/AHD2-CustomTemplate.git
   <figure>   <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/3.png?raw=true" alt="#NAME#会被命名替换。">   <figcaption>#NAME#会被命名替换。</figcaption> </figure>
 
 * 模板删除：模板列表部分可对以生成模板进行删除。
+
+* 模板添加后，可在右键菜单根据模板新建文件。
+
+  <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/4.png?raw=true" style="zoom:50%;" />
