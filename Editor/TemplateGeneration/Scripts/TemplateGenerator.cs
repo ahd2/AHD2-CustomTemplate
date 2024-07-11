@@ -14,6 +14,9 @@ public class TemplateGenerator : EditorWindow
     private string format = "";
     private string templateCSResourceFile = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/Core/GeneratorTemplate.txt";
     public static TemplateSOManager templateSOManager; //SO管理器
+    //消息提示框提示的消息
+    string message = "";
+    MessageType messageType = MessageType.None;
     
     // 子界面的枚举类型，用于切换
     private enum SubWindowType
@@ -30,7 +33,20 @@ public class TemplateGenerator : EditorWindow
     {
         GetWindow<TemplateGenerator>("Template Generator");
     }
+    
+    private void OnEnable()
+    {
+        // 加载已经存在的TemplateSOManager资产，如果不存在则创建一个新的，目的是记录下整个项目的模板信息。
+        templateSOManager = AssetDatabase.LoadAssetAtPath<TemplateSOManager>("Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/TemplateSOManager.asset");
+        if (templateSOManager == null)
+        {
+            templateSOManager = ScriptableObject.CreateInstance<TemplateSOManager>();
+            AssetDatabase.CreateAsset(templateSOManager, "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/TemplateSOManager.asset");
+            AssetDatabase.SaveAssets();
+        }
+    }
 
+    #region GUI绘制部分
     void OnGUI()
     {
         // 根据选中的标签页显示不同的子界面
@@ -63,24 +79,30 @@ public class TemplateGenerator : EditorWindow
     {
         codeName = EditorGUILayout.TextField("缩写(只支持字母)", codeName);
         codeName = Regex.Replace(codeName, @"[^a-zA-Z]", ""); //移除codeName中的所有非字母字符
-        menuName = EditorGUILayout.TextField("Menu Name", menuName);
+        menuName = EditorGUILayout.TextField("菜单显示名称", menuName);
         format = EditorGUILayout.TextField("格式", format);
         templateText = EditorGUILayout.TextArea(templateText, GUILayout.Height(100));
-        
-        // Vector2 scrollPosition = Vector2.zero; // 用于保存滚动视图的位置
-        // // 显示列表
-        // scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
-        // for (int i = 0; i < templateSOManager.templateSOs.Count; i++)
-        // {
-        //     templateSOManager.templateSOs[i] = (TemplateSO)EditorGUILayout.ObjectField(templateSOManager.templateSOs[i], typeof(TemplateSO), false);
-        // }
-        // EditorGUILayout.EndScrollView();
-        
-
-        if (GUILayout.Button("Create Template"))
+        //消息盒子
+        if (!string.IsNullOrEmpty(message))
         {
+            EditorGUILayout.HelpBox(message, messageType);
+        }
+        
+        //模板创建按钮
+        if (GUILayout.Button("创建模板"))
+        {
+            if (string.IsNullOrEmpty(codeName) || string.IsNullOrEmpty(menuName) ||  string.IsNullOrEmpty(format))
+            {
+                message = "缩写、菜单名和格式不能为空！";
+                messageType = MessageType.Error;
+                return;
+            }
+
             CreateTemplateTxt();
             CreateTemplateCS();
+            CreateTemplateSO();
+            message = "模板" + codeName +"创建完成！";
+            messageType = MessageType.Info;
         }
         
         // 应用更改
@@ -92,10 +114,35 @@ public class TemplateGenerator : EditorWindow
 
     private void DrawSOListWindow()
     {
-        // 子界面2的GUI代码
-        GUILayout.Label("This is the content of Sub Window 2");
+        Vector2 scrollPosition = Vector2.zero;
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
+        if (templateSOManager.templateSOs.Count == 0)
+        {
+            EditorGUILayout.HelpBox("模板列表为空", MessageType.Info);
+        }
+        else
+        {
+            for (int i = 0; i < templateSOManager.templateSOs.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                templateSOManager.templateSOs[i] = (TemplateSO)EditorGUILayout.ObjectField(templateSOManager.templateSOs[i], typeof(TemplateSO), false);
+                if (GUILayout.Button("Remove"))
+                {
+                    templateSOManager.RemoveTemplateSO(templateSOManager.templateSOs[i]);
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+        EditorGUILayout.EndScrollView();
+
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(templateSOManager);
+        }
     }
-    
+    #endregion
+
+    #region 逻辑函数部分
     /// <summary>
     /// 创建模板的文本文件
     /// </summary>
@@ -106,7 +153,7 @@ public class TemplateGenerator : EditorWindow
         string path = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/" + codeName + "Template.txt";
         File.WriteAllText(path, templateText);
         AssetDatabase.Refresh();
-        Debug.Log("模板创建完成！");
+        //Debug.Log("模板创建完成！");
     }
     
     /// <summary>
@@ -134,4 +181,21 @@ public class TemplateGenerator : EditorWindow
         AssetDatabase.ImportAsset(pathName);
         AssetDatabase.LoadAssetAtPath(pathName, typeof(UnityEngine.Object));
     }
+    
+    //创建SO，记录CS和txt路径。
+    void CreateTemplateSO()
+    {
+        string soPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/TemplateSO/" + codeName +
+                        "TemplateSO.asset";
+        TemplateSO newTemplateSo = ScriptableObject.CreateInstance<TemplateSO>();
+        newTemplateSo.templateCSName = codeName;
+        newTemplateSo.soPath = soPath;
+        newTemplateSo.txtPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/TemplateFile/" + codeName + "Template.txt";
+        newTemplateSo.csPath = "Packages/com.ahd2.custom-template/Editor/TemplateGeneration/Scripts/Template/" +
+                               codeName + "Template.cs";
+        AssetDatabase.CreateAsset(newTemplateSo, soPath);
+        AssetDatabase.SaveAssets();
+        templateSOManager.AddTemplateSO(newTemplateSo);
+    }
+    #endregion
 }
