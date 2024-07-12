@@ -6,6 +6,10 @@
 
 基于[Unity3D研究院编辑器之创建Lua脚本模板（十六） | 雨松MOMO程序研究院 (xuanyusong.com)](https://www.xuanyusong.com/archives/3732)大佬的案例代码进行的拓展。
 
+！！后续补充：自定义模板有更方便的方式 [Unity 自定义shader模板 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/693947160)
+
+我宣布这个包就是一个玩具。
+
 ## 安装
 
 ### 通过URL安装
