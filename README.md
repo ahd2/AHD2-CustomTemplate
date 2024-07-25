@@ -29,14 +29,9 @@ https://github.com/ahd2/AHD2-CustomTemplate.git
   * 格式，该项决定生成文件的后缀，必填。如生成HLSL文件，就填入 hlsl 。不用在前面加  .    。
   * 下面文本框填入模板。则每次该文件创建时都会自带里面的内容。可以使用#NAME#作为标识符。标识符会在文件生成后替换为文件名字。
 
-<div align="center">
-    <figure style="text-align: center;">
-        <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/2.png?raw=true" style="zoom: 80%;" />
-        <figcaption>菜单中找到生成器。</figcaption>
-    </figure>
-</div>
+<p align="center">   <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/2.png?raw=true" style="zoom:80%;"/>   <br>   <em style="color: red;">菜单里找到生成器</em> </p>
 
-  <figure>   <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/3.png?raw=true" alt="#NAME#会被命名替换。">   <figcaption>#NAME#会被命名替换。</figcaption> </figure>
+<p align="center">   <img src="https://github.com/ahd2/AHD2-DocsRepo/blob/main/AHD2_CustomTemplate/3.png?raw=true" style="zoom:80%;"/>   <br>   <em style="color: blue;">#NAME#会被命名替换。</em> </p>
 
 * 模板删除：模板列表部分可对以生成模板进行删除。
 
